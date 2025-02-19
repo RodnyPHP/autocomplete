@@ -1,4 +1,10 @@
+import autocannon from "./autocannon";
+
 export const npxSuggestions: Fig.Suggestion[] = [
+  {
+    name: autocannon.name,
+    ...("icon" in autocannon && { icon: autocannon.icon }),
+  },
   {
     name: "vite",
     icon: "https://vitejs.dev/logo.svg",
@@ -157,6 +163,10 @@ export const npxSuggestions: Fig.Suggestion[] = [
     name: "astro",
     icon: "https://astro.build/favicon.svg",
   },
+  {
+    name: "ampx",
+    icon: "https://raw.githubusercontent.com/aws-amplify/docs/refs/heads/main/public/favicon.ico",
+  },
 ];
 
 const completionSpec: Fig.Spec = {
@@ -166,7 +176,11 @@ const completionSpec: Fig.Spec = {
     name: "command",
     isCommand: true,
     generators: {
-      script: `until [[ -d node_modules/ ]] || [[ $PWD = '/' ]]; do cd ..; done; ls -1 node_modules/.bin/`,
+      script: [
+        "bash",
+        "-c",
+        "until [[ -d node_modules/ ]] || [[ $PWD = '/' ]]; do cd ..; done; ls -1 node_modules/.bin/",
+      ],
       postProcess: function (out) {
         const cli = [...npxSuggestions].reduce(
           (acc, { name }) => [...acc, name],
